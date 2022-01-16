@@ -6,9 +6,9 @@ class MessengerTests(TestCase):
         connect = mock.Mock(return_value=1)
         service = mock.Mock()
         messenger = Messenger(service,connect)
-        self.assertEqual(1,messenger.establishService())
+        self.assertEqual(1,messenger.establish_service())
     def test_establish_service_sucess(self):
         connect = mock.Mock(return_value=0)
         service = mock.Mock()
         messenger = Messenger(service,connect)
-        self.assertEqual(0,messenger.establishService())
+        self.assertEqual(0,messenger.establish_service())
