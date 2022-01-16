@@ -3,4 +3,8 @@ class Messenger:
         self.service = service
         self.connect = connect
     def establish_service(self):
-        return self.connect(self.service)
+        try:
+            return self.connect(self.service)
+        except Exception:
+            return 1
+

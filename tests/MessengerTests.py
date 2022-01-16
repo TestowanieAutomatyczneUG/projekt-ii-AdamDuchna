@@ -24,10 +24,9 @@ class MessengerTests(TestCase):
         connect.assert_called_once_with(service)
 
     def test_establish_service_connection_exception(self):
-        connect = mock.Mock(return_value=Exception("Could not connect"))
+        connect = mock.Mock(side_effect=Exception("Could not connect"))
         service = mock.Mock()
         messenger = Messenger(service, connect)
-        messenger.establish_service()
         self.assertGreaterEqual(1,messenger.establish_service())
 
 
