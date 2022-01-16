@@ -1,3 +1,3 @@
 class Messenger:
-    def MessageService(self):
+    def establish_service(self):
         pass
