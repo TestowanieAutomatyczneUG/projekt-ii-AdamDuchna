@@ -44,21 +44,28 @@ class MessengerSendDataTests(TestCase):
         messenger.establish_service()
         self.assertEqual(0, messenger.send_data(**self.service.message_data))
 
-    def test_send_data_message_wrong_type_list(self):
+    def test_send_data_message_type_list(self):
         type(self.service).message_data = mock.PropertyMock(
             return_value={'message': [], 'server': '242.16.184.252:5000'})
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
 
-    def test_send_data_message_wrong_type_dict(self):
+    def test_send_data_message_type_dict(self):
         type(self.service).message_data = mock.PropertyMock(
             return_value={'message': {}, 'server': '242.16.184.252:5000'})
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
 
-    def test_send_data_message_wrong_type_number(self):
+    def test_send_data_message_type_number(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 3, 'server': '242.16.184.252:5000'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_message_type_boolean(self):
         type(self.service).message_data = mock.PropertyMock(
             return_value={'message': 3, 'server': '242.16.184.252:5000'})
         messenger = Messenger(self.service, self.connect)
