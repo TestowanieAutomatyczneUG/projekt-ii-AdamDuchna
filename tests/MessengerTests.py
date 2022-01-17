@@ -3,30 +3,43 @@ from unittest import mock, TestCase
 from src.Messenger import Messenger
 
 
-class MessengerTests(TestCase):
+class MessengerServiceTests(TestCase):
+    def setUp(self):
+        self.connect = mock.Mock(return_value=0)
+        self.service = mock.Mock()
+
     def test_establish_service_fail(self):
-        connect = mock.Mock(return_value=1)
-        service = mock.Mock()
-        messenger = Messenger(service, connect)
+        self.connect.return_value = 1
+        messenger = Messenger(self.service, self.connect)
         self.assertEqual(1, messenger.establish_service())
 
     def test_establish_service_sucess(self):
-        connect = mock.Mock(return_value=0)
-        service = mock.Mock()
-        messenger = Messenger(service, connect)
+        messenger = Messenger(self.service, self.connect)
         self.assertEqual(0, messenger.establish_service())
 
-    def test_establish_service_connection_called_with_service(self):
-        connect = mock.Mock(return_value=0)
-        service = mock.Mock()
-        messenger = Messenger(service, connect)
-        messenger.establish_service()
-        connect.assert_called_once_with(service)
-
     def test_establish_service_connection_exception(self):
-        connect = mock.Mock(side_effect=Exception("Could not connect"))
-        service = mock.Mock()
-        messenger = Messenger(service, connect)
-        self.assertGreaterEqual(1,messenger.establish_service())
+        self.connect.side_effect = Exception("Could not connect")
+        messenger = Messenger(self.service, self.connect)
+        self.assertGreaterEqual(1, messenger.establish_service())
+
+    def test_establish_service_assert_connection_called_once_with_service(self):
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.connect.assert_called_once_with(self.service)
 
 
+class MessengerSendDataTests(TestCase):
+    def setUp(self):
+        message_data = mock.PropertyMock(return_value={'message': 'Hi Jacob', 'server': '250.11.184.255:5000'})
+        self.connect = mock.Mock(return_value=0)
+        self.service = mock.Mock()
+        type(self.service).message_data = message_data
+
+    def test_send_data_non_established_service(self):
+        messenger = Messenger(self.service, self.connect)
+        self.assertEqual(1, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_established_service(self):
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(0, messenger.send_data(**service.message_data))
