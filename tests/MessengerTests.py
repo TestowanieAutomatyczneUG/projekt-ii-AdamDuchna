@@ -42,4 +42,4 @@ class MessengerSendDataTests(TestCase):
     def test_send_data_established_service(self):
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
-        self.assertEqual(0, messenger.send_data(**service.message_data))
+        self.assertEqual(0, messenger.send_data(**self.service.message_data))
