@@ -20,7 +20,7 @@ class MessengerServiceTests(TestCase):
     def test_establish_service_connection_exception(self):
         self.connect.side_effect = Exception("Could not connect")
         messenger = Messenger(self.service, self.connect)
-        self.assertGreaterEqual(1, messenger.establish_service())
+        self.assertEqual(1, messenger.establish_service())
 
     def test_establish_service_assert_connection_called_once_with_service(self):
         messenger = Messenger(self.service, self.connect)
@@ -43,3 +43,9 @@ class MessengerSendDataTests(TestCase):
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(0, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_message_wrong_type_list(self):
+        type(self.service).message_data = mock.PropertyMock(return_value={'message': [], server: '242.16.184.252:5000'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
