@@ -13,9 +13,11 @@ class Messenger:
             return 1
 
     def send_data(self, message, server):
-        if self.connection_status and self.__validate_message__(message):
-            return 0
-        return 2
+        if self.connection_status:
+            if self.__validate_message__(message):
+                return 0
+            return 2
+        return 1
 
     @staticmethod
     def __validate_message__(message):
