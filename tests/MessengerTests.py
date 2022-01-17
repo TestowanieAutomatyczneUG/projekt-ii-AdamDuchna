@@ -71,3 +71,10 @@ class MessengerSendDataTests(TestCase):
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_message_type_string(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Paweł', 'server': '242.16.184.252:5000'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(0, messenger.send_data(**self.service.message_data))
