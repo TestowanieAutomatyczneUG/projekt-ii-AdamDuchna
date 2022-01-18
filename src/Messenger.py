@@ -31,8 +31,9 @@ class Messenger:
     @staticmethod
     def __validate_server__(server):
         if type(server) is str:
-            ip, port = server.split(':')
-            if re.match('^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])([.](?!$)|$)){4}$', ip) and int(port) <= 65525:
+            ip, port = server.rsplit(':', 1)
+            if re.match('^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])([.](?!$)|$)){4}$',
+                        ip) and port.isdigit() and int(port) <= 65525:
                 return True
             return False
         return False
