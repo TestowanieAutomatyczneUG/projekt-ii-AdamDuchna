@@ -1,4 +1,6 @@
 import re
+
+
 class Messenger:
     def __init__(self, service, connect):
         self.service = service
@@ -30,7 +32,7 @@ class Messenger:
     def __validate_server__(server):
         if type(server) is str:
             ip, port = server.split(':')
-            if re.match('^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$',ip):
+            if re.match('^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])([.](?!$)|$)){4}$', ip) and int(port) <= 65525:
                 return True
             return False
         return False
