@@ -38,6 +38,10 @@ class MessengerServiceTests(TestCase):
         messenger = Messenger(self.service, self.connect)
         self.assertEqual(1, messenger.establish_service())
 
+    def tearDown(self):
+        self.connect = None
+        self.service = None
+
 
 class MessengerValidateAndSaveDataTests(TestCase):
     def setUp(self):
@@ -215,8 +219,12 @@ class MessengerValidateAndSaveDataTests(TestCase):
         messenger.establish_service()
         self.assertEqual(0, messenger.send_data(**self.service.message_data))
 
+    def tearDown(self):
+        self.connect = None
+        self.service = None
 
-class MessengerSocketSendDataTest(TestCase):
+
+class MessengerServerSendDataTest(TestCase):
     def setUp(self):
         message_data = mock.PropertyMock(return_value={'message': 'Hi Jacob', 'server': '250.11.184.255:5000'})
         self.connect = mock.Mock(return_value=0)
@@ -319,6 +327,12 @@ class MessengerSocketSendDataTest(TestCase):
         self.http.HTTPSConnection.return_value = connector
         self.messenger.establish_http_and_send(self.http)
         connector.close.assert_called_once()
+
+    def tearDown(self):
+        self.connect = None
+        self.service = None
+        self.http = None
+        self.messenger = None
 
 
 class FakeServer:
