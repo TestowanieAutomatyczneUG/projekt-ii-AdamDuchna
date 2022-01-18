@@ -180,6 +180,13 @@ class MessengerSendDataTests(TestCase):
         messenger.establish_service()
         self.assertEqual(0, messenger.send_data(**self.service.message_data))
 
+    def test_send_data_server_ipv6_out_of_bounds(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': 'dc8f:527c:z00a:a1l1:fb72:bbc2:3767:017a:8525'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
 
 if __name__ == "__main__":
     unittest.main()
