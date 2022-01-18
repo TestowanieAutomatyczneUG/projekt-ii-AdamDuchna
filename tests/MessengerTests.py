@@ -77,7 +77,7 @@ class MessengerSendDataTests(TestCase):
 
     def test_send_data_message_type_boolean(self):
         type(self.service).message_data = mock.PropertyMock(
-            return_value={'message': 3, 'server': '242.16.184.252:5000'})
+            return_value={'message': True, 'server': '242.16.184.252:5000'})
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
@@ -99,6 +99,13 @@ class MessengerSendDataTests(TestCase):
     def test_send_data_server_type_dict(self):
         type(self.service).message_data = mock.PropertyMock(
             return_value={'message': 'Cześć Janek', 'server': {}})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_server_type_boolean(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': True})
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
