@@ -225,7 +225,24 @@ class MessengerSocketSendDataTest(TestCase):
         connector.getresponse.return_value=404
         self.http.HTTPSConnection.return_value = connector
         self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
-    
+
+    def test_establish_http_and_send_status_400(self):
+        connector = mock.MagicMock()
+        connector.getresponse.return_value=400
+        self.http.HTTPSConnection.return_value = connector
+        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
+
+    def test_establish_http_and_send_status_403(self):
+        connector = mock.MagicMock()
+        connector.getresponse.return_value=403
+        self.http.HTTPSConnection.return_value = connector
+        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
+
+    def test_establish_http_and_send_status_408(self):
+        connector = mock.MagicMock()
+        connector.getresponse.return_value=408
+        self.http.HTTPSConnection.return_value = connector
+        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
 
 
 if __name__ == "__main__":
