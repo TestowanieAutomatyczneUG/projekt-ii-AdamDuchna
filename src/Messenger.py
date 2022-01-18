@@ -5,6 +5,8 @@ class Messenger:
     def __init__(self, service, connect):
         self.service = service
         self.connect = connect
+        self.message = None
+        self.server = None
         self.connection_status = False
         self.ipv4_regex = '^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])([.](?!$)|$)){4}$'
         self.ipv6_regex = '(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1' \
