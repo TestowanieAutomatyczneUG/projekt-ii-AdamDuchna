@@ -218,7 +218,7 @@ class MessengerSocketSendDataTest(TestCase):
         connector = mock.MagicMock()
         connector.getresponse.return_value=200
         self.http.HTTPSConnection.return_value = connector
-        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
+        self.assertEqual(0,self.messenger.establish_http_and_send(self.http))
 
 
 if __name__ == "__main__":

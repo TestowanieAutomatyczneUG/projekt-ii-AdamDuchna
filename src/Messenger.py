@@ -31,6 +31,7 @@ class Messenger:
     def send_data(self, message, server):
         if self.connection_status:
             if self.__validate_message__(message) and self.__validate_server__(server):
+                self.message, self.server = message, server
                 return 0
             return 2
         return 1
@@ -48,3 +49,13 @@ class Messenger:
                     port) <= 65525:
                 return True
         return False
+
+    def establish_http_and_send(self, http):
+        conn = http.HTTPSConnection(self.server)
+        conn.request("POST", "/message", self.message)
+        response = conn.getresponse()
+        print(response)
+        conn.close()
+        if response != 200:
+            return 1
+        return 0
