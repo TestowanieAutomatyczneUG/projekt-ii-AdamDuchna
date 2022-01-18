@@ -117,19 +117,48 @@ class MessengerSendDataTests(TestCase):
         messenger.establish_service()
         self.assertEqual(0, messenger.send_data(**self.service.message_data))
 
-    def test_send_data_server_wrong_ipv4(self):
+    def test_send_data_server_ipv4_out_of_bounds(self):
         type(self.service).message_data = mock.PropertyMock(
             return_value={'message': 'Cześć Janek', 'server': '268.19.124.211:5000'})
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
 
-    def test_send_data_server_wrong_ipv4_port(self):
+    def test_send_data_server_ipv4_contains_letters(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': '2a8.1W.124.2f1:5000'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_server_ipv4_contains_special_characters(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': '2*8.1%6.12).221:5000'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_server_ipv4_port_out_of_bounds(self):
         type(self.service).message_data = mock.PropertyMock(
             return_value={'message': 'Cześć Janek', 'server': '212.19.124.211:70525'})
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_server_ipv4_contains_letters(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': '212.19.124.211:7ffa5'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_server_ipv4_contains_special_characters(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': '212.19.124.211:7^*5'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
 
 if __name__ == "__main__":
     unittest.main()
