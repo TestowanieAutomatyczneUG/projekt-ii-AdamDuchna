@@ -15,7 +15,10 @@ class MessengerServiceTests(TestCase):
         self.connect.assert_called_once_with(self.service)
 
     def test_mock_connect_returns_0_or_1(self):
-        self.assertTrue(0 <= connect(mock.ANY) <= 1)
+        self.assertTrue(0 <= self.connect(mock.ANY) <= 1)
+
+    def test_connect_is_instance_of_mock(self):
+        self.assertIsInstance(self.connect,mock.Mock)
 
     def test_establish_service_fail(self):
         self.connect.return_value = 1
