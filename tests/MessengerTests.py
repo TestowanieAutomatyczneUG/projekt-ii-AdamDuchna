@@ -18,10 +18,10 @@ class MessengerServiceTests(TestCase):
         self.assertTrue(0 <= self.connect(mock.ANY) <= 1)
 
     def test_connect_is_instance_of_mock(self):
-        self.assertIsInstance(self.connect,mock.Mock)
+        self.assertIsInstance(self.connect, mock.Mock)
 
     def test_service_is_instance_of_mock(self):
-        self.assertIsInstance(self.service,mock.Mock)
+        self.assertIsInstance(self.service, mock.Mock)
 
     def test_establish_service_fail(self):
         self.connect.return_value = 1
@@ -88,6 +88,13 @@ class MessengerSendDataTests(TestCase):
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(0, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_server_type_list(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': []})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
 
 
 if __name__ == "__main__":
