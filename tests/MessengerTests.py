@@ -277,6 +277,36 @@ class MessengerSocketSendDataTest(TestCase):
         self.http.HTTPSConnection.return_value = connector
         self.assertEqual(0, self.messenger.establish_http_and_send(self.http))
 
+    def test_spy_called_request_fake_server(self):
+        server = fake_server()
+        connector = mock.create_autospec(server, spec_set=True, )
+        connector.request = mock.Mock(side_effect=server.request)
+        connector.getresponse = mock.Mock(side_effect=server.getresponse)
+        connector.close = mock.Mock(side_effect=server.close)
+        self.http.HTTPSConnection.return_value = connector
+        self.messenger.establish_http_and_send(self.http)
+        connector.request.assert_called_once()
+
+    def test_spy_called_getresponse_fake_server(self):
+        server = fake_server()
+        connector = mock.create_autospec(server, spec_set=True, )
+        connector.request = mock.Mock(side_effect=server.request)
+        connector.getresponse = mock.Mock(side_effect=server.getresponse)
+        connector.close = mock.Mock(side_effect=server.close)
+        self.http.HTTPSConnection.return_value = connector
+        self.messenger.establish_http_and_send(self.http)
+        connector.getresponse.assert_called_once()
+
+    def test_spy_called_close_fake_server(self):
+        server = fake_server()
+        connector = mock.create_autospec(server, spec_set=True, )
+        connector.request = mock.Mock(side_effect=server.request)
+        connector.getresponse = mock.Mock(side_effect=server.getresponse)
+        connector.close = mock.Mock(side_effect=server.close)
+        self.http.HTTPSConnection.return_value = connector
+        self.messenger.establish_http_and_send(self.http)
+        connector.close.assert_called_once()
+
 
 class fake_server:
     def request(self, method, route, message):
