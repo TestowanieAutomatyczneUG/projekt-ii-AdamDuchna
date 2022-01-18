@@ -214,35 +214,59 @@ class MessengerSocketSendDataTest(TestCase):
         self.messenger.establish_service()
         self.messenger.send_data(**self.service.message_data)
 
+    def test_message_data_mock(self):
+        self.assertTrue('message' in self.service.message_data and 'server' in self.service.message_data)
+
+    def test_connector_called_request_with_message(self):
+        connector = mock.MagicMock()
+        connector.getresponse.return_value = mock.ANY
+        self.http.HTTPSConnection.return_value = connector
+        self.messenger.establish_http_and_send(self.http)
+        connector.request.assert_called_once_with('POST', '/message', 'Hi Jacob')
+
+    def test_connector_closed(self):
+        connector = mock.MagicMock()
+        connector.getresponse.return_value = mock.ANY
+        self.http.HTTPSConnection.return_value = connector
+        self.messenger.establish_http_and_send(self.http)
+        connector.close.assert_called()
+
+    def test_connector_got_response(self):
+        connector = mock.MagicMock()
+        connector.getresponse.return_value = mock.ANY
+        self.http.HTTPSConnection.return_value = connector
+        self.messenger.establish_http_and_send(self.http)
+        connector.getresponse.assert_called_once()
+
     def test_establish_http_and_send_status_200(self):
         connector = mock.MagicMock()
-        connector.getresponse.return_value=200
+        connector.getresponse.return_value = 200
         self.http.HTTPSConnection.return_value = connector
-        self.assertEqual(0,self.messenger.establish_http_and_send(self.http))
+        self.assertEqual(0, self.messenger.establish_http_and_send(self.http))
 
     def test_establish_http_and_send_status_404(self):
         connector = mock.MagicMock()
-        connector.getresponse.return_value=404
+        connector.getresponse.return_value = 404
         self.http.HTTPSConnection.return_value = connector
-        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
+        self.assertEqual(1, self.messenger.establish_http_and_send(self.http))
 
     def test_establish_http_and_send_status_400(self):
         connector = mock.MagicMock()
-        connector.getresponse.return_value=400
+        connector.getresponse.return_value = 400
         self.http.HTTPSConnection.return_value = connector
-        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
+        self.assertEqual(1, self.messenger.establish_http_and_send(self.http))
 
     def test_establish_http_and_send_status_403(self):
         connector = mock.MagicMock()
-        connector.getresponse.return_value=403
+        connector.getresponse.return_value = 403
         self.http.HTTPSConnection.return_value = connector
-        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
+        self.assertEqual(1, self.messenger.establish_http_and_send(self.http))
 
     def test_establish_http_and_send_status_408(self):
         connector = mock.MagicMock()
-        connector.getresponse.return_value=408
+        connector.getresponse.return_value = 408
         self.http.HTTPSConnection.return_value = connector
-        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
+        self.assertEqual(1, self.messenger.establish_http_and_send(self.http))
 
 
 if __name__ == "__main__":
