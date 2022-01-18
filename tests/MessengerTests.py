@@ -202,6 +202,10 @@ class MessengerValidateAndSaveDataTests(TestCase):
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
 
+    def test_mock_message_is_read_correctly(self):
+        with mock.patch("builtins.open", mock.mock_open(read_data="Halo")) as mock_file:
+            assert open("src/message").read() == "Halo"
+
 
 class MessengerSocketSendDataTest(TestCase):
     def setUp(self):
@@ -269,7 +273,7 @@ class MessengerSocketSendDataTest(TestCase):
         self.assertEqual(1, self.messenger.establish_http_and_send(self.http))
 
     def test_establish_http_and_send_to_fake_server(self):
-        server = fake_server()
+        server = FakeServer()
         connector = mock.create_autospec(server, spec_set=True, )
         connector.request = mock.Mock(side_effect=server.request)
         connector.getresponse = mock.Mock(side_effect=server.getresponse)
@@ -278,7 +282,7 @@ class MessengerSocketSendDataTest(TestCase):
         self.assertEqual(0, self.messenger.establish_http_and_send(self.http))
 
     def test_spy_called_request_fake_server(self):
-        server = fake_server()
+        server = FakeServer()
         connector = mock.create_autospec(server, spec_set=True, )
         connector.request = mock.Mock(side_effect=server.request)
         connector.getresponse = mock.Mock(side_effect=server.getresponse)
@@ -288,7 +292,7 @@ class MessengerSocketSendDataTest(TestCase):
         connector.request.assert_called_once()
 
     def test_spy_called_getresponse_fake_server(self):
-        server = fake_server()
+        server = FakeServer()
         connector = mock.create_autospec(server, spec_set=True, )
         connector.request = mock.Mock(side_effect=server.request)
         connector.getresponse = mock.Mock(side_effect=server.getresponse)
@@ -298,7 +302,7 @@ class MessengerSocketSendDataTest(TestCase):
         connector.getresponse.assert_called_once()
 
     def test_spy_called_close_fake_server(self):
-        server = fake_server()
+        server = FakeServer()
         connector = mock.create_autospec(server, spec_set=True, )
         connector.request = mock.Mock(side_effect=server.request)
         connector.getresponse = mock.Mock(side_effect=server.getresponse)
@@ -308,7 +312,7 @@ class MessengerSocketSendDataTest(TestCase):
         connector.close.assert_called_once()
 
 
-class fake_server:
+class FakeServer:
     def request(self, method, route, message):
         if method == "POST" and route == "/messages":
             self.response = server_message_process_stub(message)
@@ -319,7 +323,7 @@ class fake_server:
         return self.response
 
     def close(self):
-        self.is_closed = True
+        pass
 
 
 def server_message_process_stub(message):
