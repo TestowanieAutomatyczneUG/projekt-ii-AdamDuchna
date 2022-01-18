@@ -187,6 +187,12 @@ class MessengerSendDataTests(TestCase):
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
 
+    def test_send_data_server_ipv6_contains_special_characters(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': 'dc8f:52!c:z00[:a1l1:f&72:bbc2:3767:017a:8525'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(2, messenger.send_data(**self.service.message_data))
 
 if __name__ == "__main__":
     unittest.main()
