@@ -206,6 +206,15 @@ class MessengerValidateAndSaveDataTests(TestCase):
         with mock.patch("builtins.open", mock.mock_open(read_data="Halo")) as mock_file:
             assert open("src/message").read() == "Halo"
 
+    def test_send_data_mock_message_is_read_correctly(self):
+        with mock.patch("builtins.open", mock.mock_open(read_data="Halo")) as mock_file:
+            text = open("src/message").read()
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': text, 'server': '212.19.124.211:225'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(0, messenger.send_data(**self.service.message_data))
+
 
 class MessengerSocketSendDataTest(TestCase):
     def setUp(self):
