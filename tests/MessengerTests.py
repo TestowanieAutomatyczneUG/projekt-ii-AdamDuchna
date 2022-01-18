@@ -117,6 +117,13 @@ class MessengerSendDataTests(TestCase):
         messenger.establish_service()
         self.assertEqual(0, messenger.send_data(**self.service.message_data))
 
+    def test_send_data_server_ipv4(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': '212.29.124.211:4520'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(0, messenger.send_data(**self.service.message_data))
+
     def test_send_data_server_ipv4_out_of_bounds(self):
         type(self.service).message_data = mock.PropertyMock(
             return_value={'message': 'Cześć Janek', 'server': '268.19.124.211:5000'})
@@ -158,6 +165,14 @@ class MessengerSendDataTests(TestCase):
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
+    def test_send_data_server_ipv6(self):
+        type(self.service).message_data = mock.PropertyMock(
+            return_value={'message': 'Cześć Janek', 'server': '42a3:5e8a:d8d3:6a87:c05b:ab38:7e88:ebf0:4520'})
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.assertEqual(0, messenger.send_data(**self.service.message_data))
+
 
 
 if __name__ == "__main__":
