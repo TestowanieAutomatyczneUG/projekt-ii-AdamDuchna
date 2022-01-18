@@ -1,3 +1,4 @@
+import http.client
 import unittest
 from unittest import mock, TestCase
 
@@ -28,7 +29,7 @@ class MessengerServiceTests(TestCase):
         messenger = Messenger(self.service, self.connect)
         self.assertEqual(1, messenger.establish_service())
 
-    def test_establish_service_sucess(self):
+    def test_establish_service_success(self):
         messenger = Messenger(self.service, self.connect)
         self.assertEqual(0, messenger.establish_service())
 
@@ -38,7 +39,7 @@ class MessengerServiceTests(TestCase):
         self.assertEqual(1, messenger.establish_service())
 
 
-class MessengerSendDataTests(TestCase):
+class MessengerValidateAndSaveDataTests(TestCase):
     def setUp(self):
         message_data = mock.PropertyMock(return_value={'message': 'Hi Jacob', 'server': '250.11.184.255:5000'})
         self.connect = mock.Mock(return_value=0)
@@ -200,6 +201,25 @@ class MessengerSendDataTests(TestCase):
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(2, messenger.send_data(**self.service.message_data))
+
+
+class MessengerSocketSendDataTest(TestCase):
+    def setUp(self):
+        message_data = mock.PropertyMock(return_value={'message': 'Hi Jacob', 'server': '250.11.184.255:5000'})
+        self.connect = mock.Mock(return_value=0)
+        self.service = mock.Mock()
+        self.http = mock.create_autospec(http.client, spec_set=True, instance=True)
+        type(self.service).message_data = message_data
+        self.messenger = Messenger(self.service, self.connect)
+        self.messenger.establish_service()
+        self.messenger.send_data(**self.service.message_data)
+
+    def test_establish_http_and_send_status_200(self):
+        connector = mock.MagicMock()
+        connector.getresponse.return_value=200
+        self.http.HTTPSConnection.return_value = connector
+        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
+
 
 if __name__ == "__main__":
     unittest.main()
