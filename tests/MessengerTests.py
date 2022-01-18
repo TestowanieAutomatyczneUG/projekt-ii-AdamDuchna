@@ -1,3 +1,4 @@
+import unittest
 from unittest import mock, TestCase
 
 from src.Messenger import Messenger
@@ -7,6 +8,14 @@ class MessengerServiceTests(TestCase):
     def setUp(self):
         self.connect = mock.Mock(return_value=0)
         self.service = mock.Mock()
+
+    def test_establish_service_assert_connection_called_once_with_service(self):
+        messenger = Messenger(self.service, self.connect)
+        messenger.establish_service()
+        self.connect.assert_called_once_with(self.service)
+
+    def test_mock_connect_returns_0_or_1(self):
+        self.assertTrue(0 <= connect(mock.ANY) <= 1)
 
     def test_establish_service_fail(self):
         self.connect.return_value = 1
@@ -21,11 +30,6 @@ class MessengerServiceTests(TestCase):
         self.connect.side_effect = Exception("Could not connect")
         messenger = Messenger(self.service, self.connect)
         self.assertEqual(1, messenger.establish_service())
-
-    def test_establish_service_assert_connection_called_once_with_service(self):
-        messenger = Messenger(self.service, self.connect)
-        messenger.establish_service()
-        self.connect.assert_called_once_with(self.service)
 
 
 class MessengerSendDataTests(TestCase):
@@ -78,3 +82,7 @@ class MessengerSendDataTests(TestCase):
         messenger = Messenger(self.service, self.connect)
         messenger.establish_service()
         self.assertEqual(0, messenger.send_data(**self.service.message_data))
+
+
+if __name__ == "__main__":
+    unittest.main()
