@@ -47,5 +47,4 @@ class Messenger:
             if (re.match(self.ipv4_regex, ip) or re.match(self.ipv6_regex, ip)) and port.isdigit() and int(
                     port) <= 65525:
                 return True
-            return False
         return False
