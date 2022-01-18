@@ -52,7 +52,7 @@ class Messenger:
 
     def establish_http_and_send(self, http):
         conn = http.HTTPSConnection(self.server)
-        conn.request("POST", "/message", self.message)
+        conn.request("POST", "/messages", self.message)
         response = conn.getresponse()
         conn.close()
         if response != 200:

@@ -222,7 +222,7 @@ class MessengerSocketSendDataTest(TestCase):
         connector.getresponse.return_value = mock.ANY
         self.http.HTTPSConnection.return_value = connector
         self.messenger.establish_http_and_send(self.http)
-        connector.request.assert_called_once_with('POST', '/message', 'Hi Jacob')
+        connector.request.assert_called_once_with('POST', '/messages', 'Hi Jacob')
 
     def test_connector_closed(self):
         connector = mock.MagicMock()
@@ -267,6 +267,33 @@ class MessengerSocketSendDataTest(TestCase):
         connector.getresponse.return_value = 408
         self.http.HTTPSConnection.return_value = connector
         self.assertEqual(1, self.messenger.establish_http_and_send(self.http))
+
+    def test_establish_http_and_send_to_fake_server(self):
+        server = fake_server()
+        connector = mock.create_autospec(server, spec_set=True, )
+        connector.request = mock.Mock(side_effect=server.request)
+        connector.getresponse = mock.Mock(side_effect=server.getresponse)
+        connector.close = mock.Mock(side_effect=server.close)
+        self.http.HTTPSConnection.return_value = connector
+        self.assertEqual(0, self.messenger.establish_http_and_send(self.http))
+
+
+class fake_server:
+    def request(self, method, route, message):
+        if method == "POST" and route == "/messages":
+            self.response = server_message_process_stub(message)
+        else:
+            self.response = 405
+
+    def getresponse(self):
+        return self.response
+
+    def close(self):
+        self.is_closed = True
+
+
+def server_message_process_stub(message):
+    return 200
 
 
 if __name__ == "__main__":
