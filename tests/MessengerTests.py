@@ -20,6 +20,9 @@ class MessengerServiceTests(TestCase):
     def test_connect_is_instance_of_mock(self):
         self.assertIsInstance(self.connect,mock.Mock)
 
+    def test_service_is_instance_of_mock(self):
+        self.assertIsInstance(self.service,mock.Mock)
+
     def test_establish_service_fail(self):
         self.connect.return_value = 1
         messenger = Messenger(self.service, self.connect)
