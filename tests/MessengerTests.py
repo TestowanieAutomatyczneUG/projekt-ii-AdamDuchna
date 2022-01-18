@@ -220,6 +220,13 @@ class MessengerSocketSendDataTest(TestCase):
         self.http.HTTPSConnection.return_value = connector
         self.assertEqual(0,self.messenger.establish_http_and_send(self.http))
 
+    def test_establish_http_and_send_status_404(self):
+        connector = mock.MagicMock()
+        connector.getresponse.return_value=404
+        self.http.HTTPSConnection.return_value = connector
+        self.assertEqual(1,self.messenger.establish_http_and_send(self.http))
+    
+
 
 if __name__ == "__main__":
     unittest.main()

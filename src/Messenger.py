@@ -54,7 +54,6 @@ class Messenger:
         conn = http.HTTPSConnection(self.server)
         conn.request("POST", "/message", self.message)
         response = conn.getresponse()
-        print(response)
         conn.close()
         if response != 200:
             return 1
